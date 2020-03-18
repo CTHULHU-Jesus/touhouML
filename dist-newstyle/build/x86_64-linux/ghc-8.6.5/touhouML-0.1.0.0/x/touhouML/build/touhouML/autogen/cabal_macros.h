@@ -11,17 +11,6 @@
   (major1) == 0 && (major2) == 1 && (minor) <= 0)
 #endif /* MIN_VERSION_touhouML */
 
-/* package GLUT-2.7.0.15 */
-#ifndef VERSION_GLUT
-#define VERSION_GLUT "2.7.0.15"
-#endif /* VERSION_GLUT */
-#ifndef MIN_VERSION_GLUT
-#define MIN_VERSION_GLUT(major1,major2,minor) (\
-  (major1) <  2 || \
-  (major1) == 2 && (major2) <  7 || \
-  (major1) == 2 && (major2) == 7 && (minor) <= 0)
-#endif /* MIN_VERSION_GLUT */
-
 /* package JuicyPixels-3.3.5 */
 #ifndef VERSION_JuicyPixels
 #define VERSION_JuicyPixels "3.3.5"
@@ -43,6 +32,17 @@
   (major1) == 3 && (major2) <  0 || \
   (major1) == 3 && (major2) == 0 && (minor) <= 3)
 #endif /* MIN_VERSION_OpenGL */
+
+/* package array-0.5.3.0 */
+#ifndef VERSION_array
+#define VERSION_array "0.5.3.0"
+#endif /* VERSION_array */
+#ifndef MIN_VERSION_array
+#define MIN_VERSION_array(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  5 || \
+  (major1) == 0 && (major2) == 5 && (minor) <= 3)
+#endif /* MIN_VERSION_array */
 
 /* package base-4.12.0.0 */
 #ifndef VERSION_base
@@ -66,6 +66,17 @@
   (major1) == 1 && (major2) == 13 && (minor) <= 1)
 #endif /* MIN_VERSION_gloss */
 
+/* package gtk-0.15.4 */
+#ifndef VERSION_gtk
+#define VERSION_gtk "0.15.4"
+#endif /* VERSION_gtk */
+#ifndef MIN_VERSION_gtk
+#define MIN_VERSION_gtk(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  15 || \
+  (major1) == 0 && (major2) == 15 && (minor) <= 4)
+#endif /* MIN_VERSION_gtk */
+
 /* package matrix-0.3.6.1 */
 #ifndef VERSION_matrix
 #define VERSION_matrix "0.3.6.1"
@@ -87,6 +98,17 @@
   (major1) == 1 && (major2) <  6 || \
   (major1) == 1 && (major2) == 6 && (minor) <= 8)
 #endif /* MIN_VERSION_process */
+
+/* package text-1.2.3.1 */
+#ifndef VERSION_text
+#define VERSION_text "1.2.3.1"
+#endif /* VERSION_text */
+#ifndef MIN_VERSION_text
+#define MIN_VERSION_text(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  2 || \
+  (major1) == 1 && (major2) == 2 && (minor) <= 3)
+#endif /* MIN_VERSION_text */
 
 /* tool alex-3.2.5 */
 #ifndef TOOL_VERSION_alex
