@@ -1,2 +1,3 @@
-src/dist-newstyle
-errors.txt
+*/errors.txt
+src/mountPoint/*
+src/app/touhouML/target
