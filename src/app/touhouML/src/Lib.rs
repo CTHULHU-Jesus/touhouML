@@ -46,6 +46,15 @@ pub mod TouhouState {
     }
 
     // IMPLEMENTS
+    impl Default for GameState {
+        fn default() -> Self {
+            GameState {
+                score: 0,
+                lives: 1,
+                bombs: 1,
+            }
+        }
+    }
     impl State {
         pub fn new() -> Result<State> {
             // Return
@@ -98,9 +107,21 @@ pub mod TouhouState {
                     screen_shot(cap, "/outside/Options_menu.png".to_string())?;
                     // enter to move from options menu
                     en.key_click(Key::Return);
+                    *self = MainMenu();
                 }
-                MainMenu() => {}
-                DifSelect(d) => {}
+                MainMenu() => {
+                    menuing_delay();
+                    screen_shot(cap, "/outside/Main_menu.png".to_string());
+                    en.key_click(Key::Return);
+                    *self = DifSelect(d.unwrap_or(Difficulty::Easy));
+                }
+                DifSelect(d) => {
+                    menuing_delay();
+                    screen_shot(cap, "/outside/Difficulty_select.png".to_string());
+                    en.key_click(Key::Return);
+                    *self = Playing(GameState::default());
+                    //CharSelect(c.or(Character::Reimu));
+                }
                 CharSelect(c) => {}
                 BombSelect(b) => {}
                 Playing(GameState) => {}
