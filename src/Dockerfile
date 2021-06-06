@@ -6,87 +6,76 @@ EXPOSE 8443
 ENV DISPLAY :0.0
 
 # Install dependensies
-RUN apt-get update  -y
+RUN apt-get update  -qq
 RUN dpkg --add-architecture i386
-RUN apt-get update  -y
-# WINE INSTALL
-
-# Stole from https://github.com/tianon/dockerfiles/blob/master/wine/Dockerfile
-RUN set -eux; \
-	apt-get install -y --no-install-recommends apt-transport-https ca-certificates; \
-	savedAptMark="$(apt-mark showmanual)"; \
-	apt-get install -y --no-install-recommends gnupg dirmngr; \
-	rm -rf /var/lib/apt/lists/*; \
-	export GNUPGHOME="$(mktemp -d)"; \
-	gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys D43F640145369C51D786DDEA76F1A20FF987672F; \
-	gpg --batch --export --armor D43F640145369C51D786DDEA76F1A20FF987672F > \
-    /etc/apt/trusted.gpg.d/winehq.gpg.asc; \
-	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME"; \
-	apt-key list | grep 'WineHQ'; \
-	\
-	apt-mark auto '.*' > /dev/null; \
-	apt-mark manual $savedAptMark > /dev/null; \
-	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	\
-	suite="$(awk '$1 == "deb" { print $3; exit }' /etc/apt/sources.list)"; \
-	echo "deb https://dl.winehq.org/wine-builds/ubuntu $suite main" > /etc/apt/sources.list.d/winehq.list
-
-# https://dl.winehq.org/wine-builds/debian/dists/buster/main/binary-amd64/?C=N;O=D
-# https://www.winehq.org/news/
-ENV WINE_VERSION 5.10
-
-RUN set -eux; \
-	{ \
-		echo 'Package: *wine* *wine*:i386'; \
-		echo "Pin: version $WINE_VERSION~*"; \
-		echo 'Pin-Priority: 1001'; \
-	} > /etc/apt/preferences.d/winehq.pref; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends \
-		"winehq-staging=$WINE_VERSION~*" ;\
-	rm -rf /var/lib/apt/lists/*
-
-RUN wget -nc https://dl.winehq.org/wine-builds/winehq.key
-RUN apt-key add winehq.key
-RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ $suite main'
-RUN apt-get update
-RUN apt-get install -y winehq-stable winetricks winbind
+RUN apt-get update  -qq
+Run apt-get install -qq wget gpg
+RUN apt-get install -qq apt-utils software-properties-common 
+# Install lutris to run Touhou 6
+RUN add-apt-repository ppa:lutris-team/lutris
+RUN apt-get update -qq
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -qq lutris
+# # WINE INSTALL
+# RUN wget -nc https://dl.winehq.org/wine-builds/winehq.key
+# RUN gpg -o /etc/apt/trusted.gpg.d/winehq.key.gpg --dearmor winehq.key
+# RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main'
+# RUN apt-get update -y
+# RUN apt-get install -y --install-recommends winehq-stable winetricks
 # Non-Wine Dependencies
-RUN apt-get update  -y
-RUN apt-get install -y mono-complete
-RUN apt-get install -y apt-utils
-RUN apt-get install -y rustc cargo 
-RUN apt-get install -y xvfb
-RUN apt-get install -y libxdo-dev
-RUN apt-get install -y libxcb-randr0-dev
-RUN apt-get install -y libxcb-shm0-dev
-RUN apt-get install -y pkg-config libx11-dev
-RUN apt-get install -y x11-utils  x11-xserver-utils
-Run apt-get install -y wget
+RUN apt-get install -qq mono-complete
+RUN apt-get install -qq rustc cargo 
+RUN apt-get install -qq xvfb
+RUN apt-get install -qq libxdo-dev xdotool
+RUN apt-get install -qq libxcb-randr0-dev
+RUN apt-get install -qq libxcb-shm0-dev
+RUN apt-get install -qq pkg-config libx11-dev
+RUN apt-get install -qq x11-utils  x11-xserver-utils
+RUN apt-get install -qq unzip
+RUN apt-get install -qq imagemagick
+RUN apt-get install -qq fuseiso
+RUN apt-get install -qq language-pack-ja
+RUN apt-get install -qq xorriso
+RUN apt-get install -qq openssh-server
+# RUN apt-get install -y mesa-utils
+RUN apt-get upgrade  -y
 
-# WINEPREFIX SETUP
-# Stole from https://gitlab.com/-/snippets/2028159
-ENV WINEPREFIX "/.th_wine"
-ENV WINEARCH win32
-RUN mkdir -m=777 $WINEPREFIX
-ADD WineSetup.sh /tmp/WineSetup.sh
-RUN /tmp/WineSetup.sh
+# # WINEPREFIX SETUP
+# # Stole from https://gitlab.com/-/snippets/2028159
+# ENV WINEPREFIX "/.th_wine"
+# ENV WINEARCH win32
+# RUN mkdir -m=777 $WINEPREFIX
+# ADD WineSetup.sh /tmp/WineSetup.sh
+# RUN /tmp/WineSetup.sh
 
 # ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ 
 # Install touhou 6: Embodyment of Scarlit Devil 
 # ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ ⑨ 
-# Must be done manualy because of Leagal reasons
+ADD th06.iso /tmp/th06.iso
+RUN mkdir /iso
+RUN osirrox -indev /tmp/th06.iso -extract / /iso
+ADD lutrisInstall.sh /tmp/lutrisInstall.sh
+EXPOSE 22
+RUN echo " \
+Include /etc/ssh/ssh_config.d/*.conf \n\
+Host * \n\
+    ForwardX11 yes    \n\
+    SendEnv LANG LC_*  \n\
+    HashKnownHosts yes  \n\
+    X11DisplayOffset 10  \n\
+    ForwardX11Trusted yes \n\
+    GSSAPIAuthentication yes" > /etc/ssh/ssh_config
+CMD /tmp/lutrisInstall.sh | tee /outside/TH6intstall.log 2>&1
 
-# Install large rust depencencies to speed 
-RUN cargo install cargo-chef --version 0.1.20
-RUN mkdir -p /app/touhouML/target
-ADD recipe.json /tmp/recipe.json
-RUN cd /app/touhouML/; cargo chef cook --recipe-path /tmp/recipe.json
-RUN cd /app/touhouML/; cargo chef cook --release --recipe-path /tmp/recipe.json
-
-# Setup App       
-ADD app/ /app     
-
-# Run Code
-CMD  /app/Setup.sh > /outside/rustinfo.log 2>&1
+# 
+# # Install large rust depencencies to speed 
+# RUN cargo install cargo-chef --version 0.1.20
+# RUN mkdir -p /app/touhouML/target
+# ADD recipe.json /tmp/recipe.json
+# RUN cd /app/touhouML/; cargo chef cook --recipe-path /tmp/recipe.json
+# RUN cd /app/touhouML/; cargo chef cook --release --recipe-path /tmp/recipe.json
+# 
+# # Setup App       
+# ADD app/ /app     
+# 
+# # Run Code
+# CMD  /app/Setup.sh > /outside/rustinfo.log 2>&1
