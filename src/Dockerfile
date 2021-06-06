@@ -54,16 +54,6 @@ ADD th06.iso /tmp/th06.iso
 RUN mkdir /iso
 RUN osirrox -indev /tmp/th06.iso -extract / /iso
 ADD lutrisInstall.sh /tmp/lutrisInstall.sh
-EXPOSE 22
-RUN echo " \
-Include /etc/ssh/ssh_config.d/*.conf \n\
-Host * \n\
-    ForwardX11 yes    \n\
-    SendEnv LANG LC_*  \n\
-    HashKnownHosts yes  \n\
-    X11DisplayOffset 10  \n\
-    ForwardX11Trusted yes \n\
-    GSSAPIAuthentication yes" > /etc/ssh/ssh_config
 CMD /tmp/lutrisInstall.sh | tee /outside/TH6intstall.log 2>&1
 
 # 
