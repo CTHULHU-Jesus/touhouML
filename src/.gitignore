@@ -1,2 +1,5 @@
 recipe.json
+base-build
+base-run
+base-up
 *.iso

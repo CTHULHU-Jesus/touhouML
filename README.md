@@ -4,16 +4,27 @@
 - This repository does not come with a copy of the game **TOUHOU 6: Embodyment of Scarlet Devil**. So you must find your own 😉. 
 
 ## Installation Instructions
+### Docker
+To install docker and some other dependencies run.
+```sh
+$sudo apt-get install docker nvidia-container-runtime
+$sudo usermod -a -G docker $USER
+```
+### Game Dependencies
 - First find a legal copy of **TOUHOU 6: Embodyment of Scarlet Devil**
-- Then rename the folder to th06
-- Move that folder into `src/mountPoint`
-
+  * An un-patched iso file
+- Then rename the iso to th06.iso
+- Move that file to `./src/`
+@TODO add setup instructions
 
 ## Operating Instructions
+You must have an nvidia gpu to run this (sorry docker is hard).
 
 ### Running the simulation
+@TODO
 
 ### Showing the Replay
+@TODO
 
 ## The Outline
 

@@ -1,17 +1,16 @@
 #!/bin/bash
 
-DISPLAY=:99;
-
 run_all () {
-  /usr/sbin/sshd start;
-  export LANG="ja_JP.UTF-8";
-  export LANGAGE="ja_JP";
+  # export LANG="ja_JP.UTF-8";
+  # export LANGAGE="ja_JP";
   xhost +;
   xvinfo $Display;
   lutris=/usr/games/lutris
+  # $lutris & true;
   $lutris lutris:install/touhou-6-embodiment-of-scarle-cd-with-thcrap-and-v & true;
   # wait for lutris to install the prefix
   sleep 15;
+  wmcrtl -dl;
   # Click on pixel 315,95 with M1
   # to run lutris as root
   import -window root "/outside/Lut-screenshot-0.png";
@@ -44,9 +43,10 @@ run_all () {
   # Click on pixel 810 568
   # to install from mounted game disk
   import -window root "/outside/Lut-screenshot-4.png";
-  xdotool mousemove 810 568;
-  xdotool --repeat 2 click 1;
+  xdotool mousemove 500 600;
+  xdotool click -repeat 2 1;
   echo Step 4;
+  sleep 10;
   # Say Yes to installing wine Dependencies
   for num in {5..15..1}
   do 
@@ -55,18 +55,20 @@ run_all () {
     echo Start $num
   done;
 }
-
-
-# Setup XVFB
-XVFB="/usr/bin/Xvfb";
-XVFBARGS="$DISPLAY -screen 0 1024x768x24  -ac +extension GLX +render -noreset -l" ;
-PIDFILE="/var/run/xvfb.pid";
-echo "Starting virtual X frame buffer: $XVFB";
-start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS;
-
-
-# Run code on desktop
-xvfb_run='/usr/bin/xvfb-run -e /dev/stdout';
-FUNC=$(declare -f run_all);
-$xvfb_run -a bash -c "$FUNC; run_all"
-
+# 
+# 
+# # Setup XVFB
+# XVFB="/usr/bin/Xvfb";
+# XVFBARGS="$DISPLAY -screen 0 1024x768x24  -ac +extension GLX +render -noreset -l" ;
+# PIDFILE="/var/run/xvfb.pid";
+# echo "Starting virtual X frame buffer: $XVFB";
+# start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS;
+# 
+# 
+# # Run code on desktop
+# xvfb_run='/usr/bin/xvfb-run -e /dev/stdout';
+# FUNC=$(declare -f run_all);
+# -a bash -c "$FUNC; run_all"
+# 
+lutris=/usr/games/lutris
+$lutris lutris:install/touhou-6-embodiment-of-scarle-cd-with-thcrap-and-v & true;

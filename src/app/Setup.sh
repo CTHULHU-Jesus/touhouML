@@ -1,22 +1,21 @@
 #!/bin/bash
 
-DISPLAY=:99;
+Game_Config_File=/home/user/Games/touhou-06-embodiment-of-scarlet-devil/pfx/drive_c/Program Files/touhou6/custom.txt
 
 run_all () {
   xvinfo $Display;
   export LANG="ja_JP.UTF-8";
   export LANGAGE="ja_JP";
-  wine=/usr/bin/wine;
-  cd /outside/th06;
-  $wine Touhou06_jp.exe & true;
-  # wait for wine to install the prefix
+  lutris=/usr/games/lutris;
+  su user $lutris lutris:rungameid/1 & true;
+  # wait for lutris to do stuff
   sleep 40;
   # Say Yes to installing wine Dependencies
   for num in {0..1..1}
   do 
     import -window root "/outside/screenshot-$num.png";
     xdotool key Return;
-    sleep 40;
+    sleep 10;
   done;
   # RUN AI
   cd /app/touhouML/; 

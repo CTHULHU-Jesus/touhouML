@@ -12,36 +12,60 @@ recipe.json: app/touhouML/Cargo.toml
 	cargo chef prepare
 	mv app/touhouML/recipe.json .
 
-.PHONY: build run up login
-
-build: recipe.json
+base-build: base.Dockerfile 
 	@if [ -f "th06.iso" ]; then \
-		docker build -t $(APP_NAME):latest . ; \
+		docker build -t $(APP_NAME)_base -f ./base.Dockerfile . \
+		&& touch base-build; \
 	else \
 		>&2 echo "Cannot find th06.iso. Please provide a legal unpatched ISO with the game named \"th06.iso\" in this directory. This can be found from moyra shrine website."; \
 		false; \
 	fi
 
-run: mountPoint
-	- docker kill $(APP_NAME)
-	- docker rm $(APP_NAME)
+base-run: mountPoint base-build
+	- docker kill $(APP_NAME)_base
+	- docker rm $(APP_NAME)_base
 	docker run \
 		-it \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-e DISPLAY=unix$$DISPLAY \
+		--device /dev/dri \
 		--privileged \
 		--mount type=bind,source=$(shell pwd)/mountPoint,target=/outside \
-		--name="$(APP_NAME)" \
-		$(APP_NAME):latest
+		--name="$(APP_NAME)_base" \
+		$(APP_NAME)_base
+	docker commit $(APP_NAME)_base
+	touch base-run
 
 
+.PHONY: base-up
+base-up: base-build base-run
+
+.PHONY: build
+build: recipe.json
+	docker build -t $(APP_NAME)_full -f full.Dockerfile .
+
+
+.PHONY: run
+run: mountPoint gpu_devices
+	- docker kill $(APP_NAME)_full
+	- docker rm $(APP_NAME)_full
+	docker run \
+		-itd \
+		--gpus all\
+		--privileged \
+		--mount type=bind,source=$(shell pwd)/mountPoint,target=/outside \
+		--name="$(APP_NAME)_full" \
+		$(APP_NAME)_full
+
+.PHONY: up
 up: build run
 
+.PHONY: login
 login: 
-	docker exec -it $(APP_NAME) /bin/bash
+	docker exec -it $(APP_NAME)_full /bin/bash
 
-screen:
-	ip=`docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(APP_NAME)`; \
-	echo $$ip; \
-	ssh $$ip:6969
-
-
-	
+.PHONY: clean
+clean:
+	- rm base-*;
+	- rm -rf mountPoint
+	- rm recipe.json
